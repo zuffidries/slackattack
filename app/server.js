@@ -42,22 +42,34 @@ controller.hears(['hello', 'hi', 'howdy'], ['direct_message', 'direct_mention', 
     if (res) {
       bot.reply(message, `Hello, ${res.user.name}!`);
     } else {
-      bot.reply(message, 'Hello there!');
+      bot.reply(message, 'Hello glorious human!');
     }
   });
 });
 
 // GENERAL RESPONSE MESSAGE
 
-controller.on('message_received', (bot, message) => {
+controller.on(['direct_mention', 'mention'], (bot, message) => {
   bot.reply(message, 'What do you want from me glorious human?');
 });
 
 // USAGE MESSAGE
 
 controller.hears('help', ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
-  bot.reply(message, 'I can help you order food!');
+  bot.reply(message, 'I can help you order food glorious human!');
 });
+
+/** DISCUSS WEATHER **/
+controller.hears('weather', ['direct_message', 'direct_mention', 'mention'], (bot, message) => {
+  bot.startConversation(message, askWeather);
+});
+
+function askWeather(response, convo) {
+  convo.ask('I have no knowledge of this concept glorious human. Will you teach me?', (res, con) => {
+    convo.say('Your brilliance astounds me glorious human.');
+    convo.next();
+  });
+}
 
 /** ORDER FOOD **/
 // ADAPTED FROM: https://github.com/howdyai/botkit/blob/master/examples/convo_bot.js
@@ -70,8 +82,8 @@ controller.hears(['eat', 'food', 'hunger', 'hungry'], ['direct_message', 'direct
 });
 
 function askType(response, convo) {
-  convo.ask('What are you in the mood for?', (res, con) => {
-    convo.say('Great');
+  convo.ask('What are you in the mood for glorious human?', (res, con) => {
+    convo.say('Thank you glorious human.');
     type = res.text;
     askLocation(res, con);
     convo.next();
@@ -79,8 +91,8 @@ function askType(response, convo) {
 }
 
 function askLocation(response, convo) {
-  convo.ask('Where are you?', (res, con) => {
-    convo.say('Copy that.');
+  convo.ask('Where are you glorious human?', (res, con) => {
+    convo.say('I will have suggestions shortly glorious human.');
     loc = res.text;
     search(res, con);
     convo.next();
@@ -98,3 +110,24 @@ function search(response, convo) {
     convo.next();
   });
 }
+
+/** USE AN ATTACHMENT **/
+// ADAPTED FROM: https://github.com/howdyai/botkit#botreply
+
+controller.hears('attachment', ['direct_message, direct_mention'], (bot, message) => {
+  const replyWithAttachments = {
+    username: 'zuffjr',
+    text: 'This is a pre-text',
+    attachments: [
+      {
+        fallback: 'To be useful, I need you to invite me in a channel.',
+        title: 'How can I help you?',
+        text: 'To be useful, I need you to invite me in a channel ',
+        color: '#7CD197',
+      },
+    ],
+    icon_url: 'http://lorempixel.com/48/48',
+  };
+
+  bot.reply(message, replyWithAttachments);
+});
