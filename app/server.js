@@ -53,7 +53,7 @@ controller.hears(['hello', 'hi', 'howdy'], ['direct_message', 'direct_mention', 
 
 // GENERAL RESPONSE MESSAGE
 
-controller.on(['direct_mention', 'mention'], (bot, message) => {
+controller.hears(['what', 'function', 'purpose']['direct_message', 'direct_mention', 'mention'], (bot, message) => {
   bot.reply(message, 'What do you want from me glorious human?');
 });
 
